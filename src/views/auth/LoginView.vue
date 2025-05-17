@@ -1,6 +1,11 @@
 <template>
     <div>
-        Login
+        <div class="bg-orange-primary">
+            Login
+        </div>
+        <div class="bg-red-500">
+            Login
+        </div>
     </div>
 </template>
 
