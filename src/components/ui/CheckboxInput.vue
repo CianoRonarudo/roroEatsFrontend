@@ -57,12 +57,12 @@ const handleChange = () => {
 }
 
 .custom-checkbox:hover:not(.disabled) {
-  border-color: #F26AF2; /* orange-primary */
+  border-color: #f26a1b; /* orange-primary */
 }
 
 .custom-checkbox:checked {
-  background-color: #F26AF2; /* orange-primary */
-  border-color: #F26AF2;
+  background-color: #f26a1b; /* orange-primary */
+  border-color: #f26a1b;
 }
 
 .custom-checkbox:checked::after {
@@ -78,7 +78,7 @@ const handleChange = () => {
 }
 
 .custom-checkbox:focus-visible {
-  box-shadow: 0 0 0 3px rgba(242, 106, 242, 0.3); /* orange-primary with opacity */
+  box-shadow: 0 0 0 3px rgba(208, 115, 9, 0.3); /* orange-primary with opacity */
 }
 
 .custom-checkbox.disabled {

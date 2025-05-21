@@ -11,12 +11,14 @@
         <!-- Formulaire -->
         <div class="p-6 space-y-4">
             <form @submit.prevent="handleLogin" class="space-y-4">
-                <TextInput 
+                <EmailInput 
                     v-model="userForm.email" 
                     label="Votre adresse mail" 
                     placeholder="Email"
                     icon="envelope"
                     class="w-full"
+                    :error="v$.email.$errors[0]?.$message"
+                    @blur="v$.email.$touch()"
                 />
                 
                 <PasswordInput 
@@ -25,13 +27,12 @@
                     placeholder="Mot de passe"
                     icon="lock"
                     class="w-full"
+                    :error="v$.password.$errors[0]?.$message"
+                    @blur="v$.password.$touch()"
                 />
 
                 <div class="flex flex-col sm:flex-row justify-between items-center">
-                    <!-- <label class="inline-flex items-center space-x-2 cursor-pointer">
-                        <input type="checkbox" class="rounded border-gray-300 text-orange-primary focus:ring-orange-primary">
-                        <span class="text-sm text-gray-600">Se souvenir de moi</span>
-                    </label> -->
+                    
                     <CheckboxInput label="Se souvenir de moi" />
                     <router-link 
                         to="/forgot-password" 
@@ -41,12 +42,8 @@
                     </router-link>
                 </div>
 
-                <button 
-                    type="submit" 
-                    class="w-full bg-orange-primary hover:bg-orange-600 text-white py-3 px-4 rounded-md transition duration-200 font-medium"
-                >
-                    Se connecter
-                </button>
+                <BtnInput :loading="useAuth.isLoading" :disabled="v$.$invalid">Se connecter</BtnInput>
+                
             </form>
 
             <div class="text-center pt-4 border-t border-gray-100">
@@ -69,23 +66,61 @@
 <script setup>
 
 import PasswordInput from '@/components/ui/PasswordInput.vue';
-import TextInput from '@/components/ui/TextInput.vue';
 import CheckboxInput from '@/components/ui/CheckboxInput.vue';
+import BtnInput from '@/components/ui/BtnInput.vue';
 import { useAuthStore } from '@/stores/auth.store';
 import { ref } from 'vue';
+import EmailInput from '@/components/ui/EmailInput.vue';
+import { useToast } from 'vue-toastification';
+import { useRouter } from 'vue-router';
+import { authValidations } from '@/utils/validators';
+import useVuelidate from '@vuelidate/core';
+
+
 
 const useAuth = useAuthStore()
+
+const toast = useToast()
+
+const router = useRouter()
 
 const userForm = ref({
     email : '',
     password : ''
 })
 
+const rules = {
+    email : authValidations.email,
+    password : authValidations.password
+}
+
+const v$ = useVuelidate(rules, userForm)
+
 const handleLogin = async () =>{
+    
+
     try {
+        const isValid = await v$.value.$validate()
+
+        if (!isValid) {
+            v$.value.$errors.forEach((error) => {
+                toast.error(error.$message)
+            })
+            return
+        }
         const response = await useAuth.login(userForm.value)
+
+        if (response.success) {
+            toast.success(response.message || 'Connexion reussie')
+            await router.push('/')
+        } else{
+            toast.error(response.message || 'Identifiants incorrects')
+        }
+        
     } catch (error) {
-        console.log('error', error)
+        console.error('error', error)
+        toast.error('La connexion a échouée')
+        userForm.value.password = ''
     }
 }
 

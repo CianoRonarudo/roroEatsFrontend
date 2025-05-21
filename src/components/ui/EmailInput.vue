@@ -12,7 +12,7 @@
     <div class="relative">
       <input
         :id="inputId"
-        type="text"
+        type="email"
         :value="modelValue"
         @input="handleInput"
         :placeholder="placeholder"

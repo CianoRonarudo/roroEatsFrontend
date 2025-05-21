@@ -1,10 +1,7 @@
 import api from "@/utils/api"
 import { defineStore } from "pinia"
-import { useRouter } from "vue-router"
-import { useToast } from "vue-toastification"
 
-const router = useRouter()
-const toast = useToast()
+
 
 export const useAuthStore = defineStore("auth", {
     state: () => ({
@@ -36,7 +33,7 @@ export const useAuthStore = defineStore("auth", {
 
                 this.message = response.data.message
                 console.log('response', response)
-                toast.success(this.message)
+                
                 return {
                     success : true,
                     message : this.message
@@ -52,7 +49,7 @@ export const useAuthStore = defineStore("auth", {
                     
                 }
                 console.log('error', error)
-                toast.error(this.message)
+                
                 return {
                     success : false,
                     message : this.message
@@ -78,22 +75,27 @@ export const useAuthStore = defineStore("auth", {
                 localStorage.setItem('refresh', this.refresh)
                 this.user = response.data.user
                 this.message = response.data.message
-                toast.success(this.message)
+                
+                
+               
                 return {
                     success : true,
-                    message : this.message
+                    message : this.message,
+                    user : this.user
                 }
             } catch(error){
+                // console.log('error', error.response.data.message)
                 if(error.response?.status === 401){
-                    this.message = error.data
-                    toast.error(this.message)
+                    this.message = error.response.data.error
+
+                    
                     return {
                         success : false,
                         message : this.message
                     }
                 } else {
-                    this.message = error.message
-                    toast.error(this.message)
+                    this.message = error.response.data.message
+                    
                     return {
                         success : false,
                         message : this.message

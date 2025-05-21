@@ -5,15 +5,17 @@ import RegisterView from '@/views/auth/RegisterView.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 
 const routes = [
+  {path: '/', redirect: '/home' },
   {
     path : '/',
     component : () => import('@/components/layout/DefaultLayout.vue'),
     children : [
       {
-        path: '',
+        path: 'home',
         component: HomePage,
         name : 'HomePage',
       },
+      
     ],
   },
   {
@@ -21,12 +23,12 @@ const routes = [
     component : () => import('@/components/layout/BlankLayout.vue'),
     children : [
       {
-        path: '/login',
+        path: 'login',
         component: LoginView,
         name : 'Login',
       },
       {
-        path: '/register',
+        path: 'register',
         component: RegisterView,
         name : 'Register',
       }
